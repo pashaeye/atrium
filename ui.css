@@ -228,6 +228,10 @@ input { font: inherit; color: inherit; }
   box-shadow: var(--float-shadow);
   animation: toast-in 0.25s var(--ease);
 }
+.toast.long {
+  width: max-content; max-width: min(280px, calc(100vw - 32px)); padding: 11px 14px; border-radius: 14px;
+  font-weight: 500; font-size: 12.5px; line-height: 1.45; text-align: left; text-wrap: pretty;
+}
 
 /* Multi-line field and segmented choice (focus dialog, blocked sites) */
 .modal textarea {
@@ -253,3 +257,29 @@ input { font: inherit; color: inherit; }
 
 /* Dark site icons on a dark background, turned light (watchDarkIcons in shared.js) */
 img.inv { filter: invert(1) hue-rotate(180deg); }
+
+/* A message with an icon and a title: what it's about at a glance. */
+.toast.rich { display: flex; align-items: flex-start; gap: 10px; font-weight: 500; }
+.toast .t-ico {
+  width: 26px; height: 26px; flex: none; border-radius: 8px; display: grid; place-items: center;
+  background: rgba(255, 255, 255, 0.12); color: #fff;
+}
+.toast .t-ico svg { width: 15px; height: 15px; display: block; }
+.toast[data-tone="focus"] .t-ico { background: rgba(232, 77, 61, 0.22); color: #ff7a6b; }
+.toast[data-tone="error"] .t-ico { background: rgba(255, 159, 10, 0.22); color: #ffb340; }
+.toast[data-tone="done"] .t-ico { background: rgba(52, 199, 89, 0.22); color: #5fd38a; }
+.toast .t-body { display: grid; gap: 1px; min-width: 0; }
+.toast .t-title { font-weight: 650; font-size: 12.5px; }
+.toast.rich .t-text { color: rgba(255, 255, 255, 0.72); font-size: 12px; line-height: 1.4; }
+.toast.rich .t-text:only-child { color: #fff; font-weight: 600; }
+
+.toast .t-act {
+  justify-self: start; margin-top: 7px; padding: 5px 11px; border-radius: 999px; font: inherit; font-size: 12px; font-weight: 600;
+  color: #1c1a26; background: #fff; border: 0; cursor: pointer;
+}
+.toast .t-act:hover { background: #ecebf3; }
+.toast .t-x {
+  margin-left: auto; width: 20px; height: 20px; flex: none; border: 0; border-radius: 999px; display: grid; place-items: center;
+  background: transparent; color: rgba(255, 255, 255, 0.55); font-size: 15px; line-height: 1; cursor: pointer;
+}
+.toast .t-x:hover { color: #fff; background: rgba(255, 255, 255, 0.12); }

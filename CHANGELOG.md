@@ -4,6 +4,58 @@ All notable changes to Atrium (called Spaces before 1.0). Versions follow [Seman
 
 The history before 0.8.1 was reconstructed from the development log (239 requests, 14–20 November 2026), so the dates of the early versions are approximate.
 
+## 1.5.21 — 2026-11-21
+- The first-focus notification check is remembered under a new name, so it shows once more for anyone who saw the older note.
+
+## 1.5.20 — 2026-11-21
+- The first focus sends a notification right away, and the sidebar asks whether it showed up, with a button that opens the system's notification settings (macOS System Settings → Notifications → Google Chrome; Windows Settings → Notifications).
+- Sidebar messages can have a close button and an action button.
+
+## 1.5.19 — 2026-11-21
+- Focus: the checking helpers are gone (the 1-minute test Pomodoro, “Test sound and notification”, the test button in the first-focus note).
+
+## 1.5.18 — 2026-11-21
+- Sidebar messages say what they're about: an icon and a short title (a tomato for focus, a bell for the notification test, a moon for sleeping tabs, a link for copying, a warning for errors) above the details.
+
+## 1.5.17 — 2026-11-21
+- Sidebar messages span the full width of the sidebar.
+
+## 1.5.16 — 2026-11-21
+- The “round done” message in the sidebar goes away as soon as the next phase starts, also when you start it from the macOS notification.
+
+## 1.5.15 — 2026-11-21
+- Clicking the end-of-round notification also brings Chrome to the front, in the window focus was started in.
+
+## 1.5.14 — 2026-11-21
+- Development builds only (loaded unpacked): the tomato's right-click menu has “Pomodoro · 1 + 1 min (test)” for checking the end of a round and a break quickly. Store builds don't show it.
+
+## 1.5.13 — 2026-11-21
+- The end-of-round notification has no buttons of its own (macOS put them, with Chrome's “Settings”, into an “Options” menu): it says “Click to start a 5 min break” and a click does that.
+
+## 1.5.12 — 2026-11-21
+- The end-of-round notification has one button, “Start break” or “Start focus”, shown right on it (macOS hid two buttons in an “Options” menu). Ending focus stays in the sidebar.
+
+## 1.5.11 — 2026-11-21
+- The end-of-round notification has buttons: “Start break” (or “Start focus” after a break) and “End focus”.
+
+## 1.5.10 — 2026-11-21
+- Longer sidebar messages show as a neat card instead of a stretched pill. After a notification test, the how-to-allow hint shows only the first time.
+
+## 1.5.9 — 2026-11-21
+- The first time you start focus, a short note explains how to allow Chrome's notifications in the system settings (so the end-of-round alert shows), with a “Send a test” button.
+
+## 1.5.8 — 2026-11-21
+- “Test sound and notification” says in the sidebar whether Chrome sent the notification, and where to turn notifications on if it didn't reach the screen.
+
+## 1.5.7 — 2026-11-21
+- Focus menu (click or right-click the tomato): “Test sound and notification” plays the end-of-round chime and shows the notification, to check they reach you.
+
+## 1.5.6 — 2026-11-21
+- Focus: the “round done” / “break is over” notification shows up every time (it used to replace an earlier one silently). Starting a break or a round yourself no longer leaves a notification behind.
+
+## 1.5.5 — 2026-11-21
+- Google Docs, Sheets, Slides and Forms each show their own icon: icons are remembered per app on docs.google.com, and every open tab keeps the icon it reported itself.
+
 ## 1.5.4 — 2026-11-21 · Ready for the Chrome Web Store
 - Setup guide covers split view, the Search button, the new focus card and calls; privacy policy and store texts updated.
 - Home page link: pashaeye.github.io/atrium.

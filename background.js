@@ -11,7 +11,7 @@
 //
 // Tree node: { id, type: 'item', url, title } | { id, type: 'folder', name, icon, collapsed, children: Tree }
 
-import { COLORS, spaceTitle, sameUrl, samePage, realIconFor } from './shared.js';
+import { COLORS, spaceTitle, sameUrl, samePage, realIconFor, iconKey } from './shared.js';
 
 const uid = () => crypto.randomUUID().slice(0, 8);
 
@@ -843,6 +843,10 @@ const handlers = {
   },
   async startFocus({ windowId, goal, mode }, c) { await startFocus(windowId, { goal, mode }, c); },
   async skipFocusPhase() { await focusTick({ skip: true }); },
+  /** The first focus: a notification right away, so you can tell whether they reach you. */
+  async focusHello() {
+    notify('hello', 'Focus is on', 'When the round ends, Atrium tells you here. Click to close.');
+  },
   async endFocus() { await endFocus(false); },
   async extendFocus({ minutes }) {
     const focus = await getFocus();
@@ -1536,7 +1540,9 @@ chrome.runtime.onMessage.addListener((msg, sender, sendResponse) => {
     return false;
   }
   if (msg?.type === 'realIcon' && typeof msg.host === 'string' && /^(https?|file|data):/.test(msg.url || '')) {
-    rememberRealIcon(msg.host, msg.url);
+    // Per app (see iconKey in shared.js), and per tab for the tab that reported it.
+    rememberRealIcon(sender.url ? iconKey(sender.url) || msg.host : msg.host, msg.url);
+    if (sender.tab?.id != null) rememberTabIcon(sender.tab.id, msg.url);
     sendResponse({});
     return false;
   }
@@ -1663,10 +1669,13 @@ async function scheduleFocusAlarm(focus) {
   if (times.length) await chrome.alarms.create(FOCUS_ALARM, { when: Math.min(...times) + 300 });
 }
 
-function notify(id, title, message) {
+function notify(id, title, message, buttons = []) {
   try {
     // The end of a focus round or a break stays on screen until you act on it.
-    chrome.notifications?.create(`spaces-focus-${id}`, { type: 'basic', iconUrl: chrome.runtime.getURL('icons/icon-128.png'), title, message: message || ' ', priority: 1, requireInteraction: id === 'phase' }, () => void chrome.runtime.lastError);
+    chrome.notifications?.create(`spaces-focus-${id}`, {
+      type: 'basic', iconUrl: chrome.runtime.getURL('icons/icon-128.png'), title, message: message || ' ', priority: 1,
+      requireInteraction: id === 'phase', ...(buttons.length ? { buttons: buttons.map((b) => ({ title: b })) } : {}),
+    }, () => void chrome.runtime.lastError);
   } catch { /* notifications unavailable */ }
 }
 const fmtMinutes = (m) => (m < 60 ? `${m} min` : `${Math.floor(m / 60)} h${m % 60 ? ` ${m % 60} min` : ''}`);
@@ -1680,7 +1689,7 @@ async function startFocus(windowId, { goal = '', mode = 'pomodoro' } = {}, c) {
   const focus = {
     goal: String(goal || '').trim().slice(0, 120), windowId, spaceId: c.win.active, mode: kind, startedAt: now,
     phase: 'work', round: 1, phaseStartedAt: now, phaseEndsAt: minutes ? now + minutes * 60e3 : null,
-    workedMs: 0, passes: {},
+    workedMs: 0, passes: {}, workMin: POMODORO.work, restMin: POMODORO.rest,
     // Tabs open when focus started: only these fold away in the sidebar; tabs opened while focusing stay.
     before: (await chrome.tabs.query({})).map((t) => t.id),
   };
@@ -1707,12 +1716,12 @@ async function endFocus(finished = true) {
 async function nextPhase(focus, now = Date.now()) {
   if (focus.phase === 'work') {
     focus.workedMs += now - focus.phaseStartedAt;
-    Object.assign(focus, { phase: 'break', phaseStartedAt: now, phaseEndsAt: now + POMODORO.rest * 60e3 });
-    notify('phase', `Break · ${POMODORO.rest} min`, `Round ${focus.round} done. Stand up, look away from the screen.`);
+    Object.assign(focus, { phase: 'break', phaseStartedAt: now, phaseEndsAt: now + (focus.restMin ?? POMODORO.rest) * 60e3 });
+    chrome.notifications?.clear('spaces-focus-phase'); // you just started it yourself: no banner needed
   } else {
     focus.round += 1;
-    Object.assign(focus, { phase: 'work', phaseStartedAt: now, phaseEndsAt: now + POMODORO.work * 60e3, passes: {} });
-    notify('phase', `Focus · round ${focus.round}`, focus.goal || 'Distracting sites are paused again.');
+    Object.assign(focus, { phase: 'work', phaseStartedAt: now, phaseEndsAt: now + (focus.workMin ?? POMODORO.work) * 60e3, passes: {} });
+    chrome.notifications?.clear('spaces-focus-phase');
   }
 }
 
@@ -1729,8 +1738,12 @@ async function focusTick({ skip = false } = {}) {
     // Pomodoro: the phase is over, but the next one starts only when you say so (the tomato or the
     // notification). Until then sites stay as they are.
     focus.waiting = true;
+    // Cleared first: macOS updates a notification with the same id silently, without showing it again.
+    await new Promise((r) => (chrome.notifications ? chrome.notifications.clear('spaces-focus-phase', () => r()) : r()));
     notify('phase', focus.phase === 'work' ? `Round ${focus.round} done` : 'Break is over',
-      focus.phase === 'work' ? 'Click to start a 5 min break.' : 'Click to start the next round of focus.');
+      // No buttons: Chrome adds its own “Settings” to every notification, and with two actions macOS hides
+      // them all in an “Options” menu. A click on the notification itself goes on.
+      focus.phase === 'work' ? `Click to start a ${focus.restMin ?? POMODORO.rest} min break.` : 'Click to start the next round.');
   }
   for (const [site, until] of Object.entries(focus.passes)) if (until <= now) delete focus.passes[site];
   await setFocus(focus);
@@ -1740,6 +1753,20 @@ async function focusTick({ skip = false } = {}) {
 chrome.alarms.onAlarm.addListener((a) => { if (a.name === FOCUS_ALARM) serial(() => focusTick()); });
 // The "round done / break is over" notification: a click starts the next phase.
 chrome.notifications?.onClicked.addListener((id) => {
+  if (id === 'spaces-focus-hello') return void chrome.notifications.clear(id);
+  if (id !== 'spaces-focus-phase') return;
+  chrome.notifications.clear(id);
+  serial(async () => {
+    const focus = await getFocus();
+    // Back to Chrome: the window focus was started in (or the last one used).
+    const win = (focus?.windowId != null && await chrome.windows.get(focus.windowId).catch(() => null))
+      || await chrome.windows.getLastFocused({ windowTypes: ['normal'] }).catch(() => null);
+    if (win) await chrome.windows.update(win.id, { focused: true }).catch(() => {});
+    if (focus?.waiting) await focusTick({ skip: true });
+  });
+});
+// Its button: “Start break” / “Start focus” (ending focus stays in the sidebar).
+chrome.notifications?.onButtonClicked.addListener((id) => {
   if (id !== 'spaces-focus-phase') return;
   chrome.notifications.clear(id);
   serial(async () => { if ((await getFocus())?.waiting) await focusTick({ skip: true }); });
@@ -2290,5 +2317,26 @@ const isPlainIcon = (u) => { try { return !!u && u.startsWith('data:image/svg') 
 function realFavicon(t, icons) {
   const fav = t.favIconUrl || '';
   if (!isPlainIcon(fav)) return fav;
-  return realIconFor(icons, t.url || t.pendingUrl || '');
+  return tabIcons[t.id] || realIconFor(icons, t.url || t.pendingUrl || '');
 }
+// The real icon each open tab reported (session.tabIcons): a tab shows its own, not the last one its site sent.
+let tabIcons = {};
+chrome.storage.session.get('tabIcons').then((r) => { tabIcons = r.tabIcons ?? {}; }, () => {});
+function rememberTabIcon(tabId, url) {
+  if (tabIcons[tabId] === url) return;
+  tabIcons = { ...tabIcons, [tabId]: url };
+  chrome.storage.session.set({ tabIcons }).catch(() => {});
+}
+// A tab that goes to another page reports that page's icon anew; until then it uses the site's (per app).
+chrome.tabs.onUpdated.addListener((tabId, change) => {
+  if (!change.url || !(tabId in tabIcons)) return;
+  const { [tabId]: _old, ...rest } = tabIcons;
+  tabIcons = rest;
+  chrome.storage.session.set({ tabIcons }).catch(() => {});
+});
+chrome.tabs.onRemoved.addListener((tabId) => {
+  if (!(tabId in tabIcons)) return;
+  const { [tabId]: _gone, ...rest } = tabIcons;
+  tabIcons = rest;
+  chrome.storage.session.set({ tabIcons }).catch(() => {});
+});

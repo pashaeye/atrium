@@ -182,10 +182,28 @@ export function pickModal({ title, note, items, submitLabel }) {
 }
 
 let toastTimer;
-export function toast(msg, ms = 3500) {
+/** A short message at the bottom. With `title` and/or `icon` (SVG markup) it's a small card that says
+    what it's about; `tone` ('focus' | 'error' | 'done') colours the icon. */
+export function toast(msg, ms = 3500, { title = '', icon = '', tone = '', action = null } = {}) {
   const el = document.getElementById('toast');
   if (!el) return console.warn(msg);
-  el.textContent = msg;
+  if (title || icon || action) {
+    el.innerHTML = `${icon ? `<span class="t-ico">${icon}</span>` : ''}<span class="t-body">${title ? '<b class="t-title"></b>' : ''}<span class="t-text"></span>${action ? '<button type="button" class="t-act"></button>' : ''}</span><button type="button" class="t-x" aria-label="Close">×</button>`;
+    if (title) el.querySelector('.t-title').textContent = title;
+    el.querySelector('.t-text').textContent = msg;
+    // `action` = { label, run }: a button inside the message (it stays until clicked or closed).
+    if (action) {
+      const b = el.querySelector('.t-act');
+      b.textContent = action.label;
+      b.addEventListener('click', () => { action.run(); el.hidden = true; });
+    }
+    el.querySelector('.t-x').addEventListener('click', () => { el.hidden = true; });
+  } else {
+    el.textContent = msg;
+  }
+  el.classList.toggle('rich', !!(title || icon));
+  el.dataset.tone = tone;
+  el.classList.toggle('long', String(msg).length > 44); // more than a line: a card, not a pill
   el.hidden = false;
   clearTimeout(toastTimer);
   toastTimer = setTimeout(() => { el.hidden = true; }, ms);

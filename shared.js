@@ -51,7 +51,21 @@ export function realIconFor(icons, pageUrl) {
   let host;
   try { host = new URL(pageUrl).hostname; } catch { return ''; }
   const bare = host.replace(/^www\./, '');
-  return icons[host] || icons[bare] || icons[`www.${bare}`] || '';
+  const app = iconKey(pageUrl);
+  return (app !== host && icons[app]) || icons[host] || icons[bare] || icons[`www.${bare}`] || '';
+}
+
+// Sites where one host serves several apps with their own icons: Google Docs, Sheets, Slides, Forms…
+// all live on docs.google.com. Their icons are remembered per app: "docs.google.com/spreadsheets".
+const MULTI_APP_HOSTS = new Set(['docs.google.com']);
+/** The key a page's real icon is remembered under: the host, or host + app for the sites above. */
+export function iconKey(pageUrl) {
+  let u;
+  try { u = new URL(pageUrl); } catch { return ''; }
+  if (!MULTI_APP_HOSTS.has(u.hostname)) return u.hostname;
+  const seg = u.pathname.split('/').filter(Boolean);
+  const app = seg[0] === 'a' ? seg[2] : seg[0]; // Workspace: /a/<domain>/document/…
+  return app ? `${u.hostname}/${app}` : u.hostname;
 }
 
 /** Message to the background worker; resolves with its reply or throws its error. */

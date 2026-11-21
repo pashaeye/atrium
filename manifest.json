@@ -1,7 +1,7 @@
 {
   "manifest_version": 3,
   "name": "Atrium — Vertical Tabs, Spaces & Sidebar",
-  "version": "1.5.4",
+  "version": "1.5.21",
   "description": "Spaces for Chrome’s vertical tabs: Favorites, Pinned tabs, a Command Bar, Peek, focus mode and screenshots in the side panel.",
   "minimum_chrome_version": "127",
   "background": {

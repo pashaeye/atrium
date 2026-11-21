@@ -15,7 +15,7 @@ async function act(type, payload = {}) {
   try {
     return await send(type, { windowId, ...payload });
   } catch (e) {
-    toast(e.message);
+    toast(e.message, 5000, { title: 'Couldn’t do that', icon: ALERT_ICON, tone: 'error' });
   } finally {
     schedule();
   }
@@ -234,6 +234,8 @@ function todayHtml(s) {
 }
 
 const COPY_ICON = icon('copy-line');
+const BELL_ICON = '<svg viewBox="0 0 256 256" fill="currentColor" aria-hidden="true"><path d="M221.8,175.94C216.25,166.38,208,139.33,208,104a80,80,0,1,0-160,0c0,35.34-8.26,62.38-13.81,71.94A16,16,0,0,0,48,200H88.81a40,40,0,0,0,78.38,0H208a16,16,0,0,0,13.8-24.06ZM128,216a24,24,0,0,1-22.62-16h45.24A24,24,0,0,1,128,216Z"/></svg>';
+const ALERT_ICON = '<svg viewBox="0 0 256 256" fill="currentColor" aria-hidden="true"><path d="M128,24A104,104,0,1,0,232,128,104.11,104.11,0,0,0,128,24Zm-8,56a8,8,0,0,1,16,0v56a8,8,0,0,1-16,0Zm8,104a12,12,0,1,1,12-12A12,12,0,0,1,128,184Z"/></svg>';
 const CAMERA_ICON = icon('camera-line');
 const INCOGNITO_ICON = icon('detective-line');
 const INCOGNITO_TIP = 'Open in Incognito&#10;Opens this page in an Incognito window, signed out; this tab stays';
@@ -638,7 +640,7 @@ document.addEventListener('click', async (e) => {
       const stale = activePage().today
         .filter((t) => !t.active && t.lastAccessed && t.lastAccessed < cutoff)
         .sort((a, b) => a.lastAccessed - b.lastAccessed);
-      if (!stale.length) return toast(`No tabs unused for over ${STALE_DAYS} days`);
+      if (!stale.length) return toast(`Every tab was used in the last ${STALE_DAYS} days.`, 3500, { title: 'Nothing to clean up', icon: icon('broom') });
       const ids = await pickModal({
         title: 'Clean up Today',
         note: `Tabs not used for over ${STALE_DAYS} days. Untick the ones you want to keep.`,
@@ -736,7 +738,7 @@ function spaceMenu(spaceId) {
       label: 'Close copies from other windows',
       run: async () => {
         const n = await act('closeCopies', { spaceId });
-        toast(n ? `${n} cop${n === 1 ? 'y' : 'ies'} closed` : 'No copies here');
+        toast(n ? 'They stay open in your other windows.' : 'No page here is open in another window too.', 3500, { title: n ? `${n} cop${n === 1 ? 'y' : 'ies'} closed` : 'No copies here', icon: icon('app-window') });
       },
     },
     { separator: true },
@@ -764,7 +766,7 @@ function settingsMenu() {
       label: 'Put other Spaces to sleep now',
       run: async () => {
         const n = await act('sleepSpace', { spaceId: null });
-        toast(n ? `${n} tab${n === 1 ? '' : 's'} put to sleep` : 'Nothing to put to sleep');
+        toast(n ? 'They stay in the list and reload when you open them.' : 'Other Spaces have no loaded tabs.', 3500, { title: n ? `${n} tab${n === 1 ? '' : 's'} put to sleep` : 'Nothing to put to sleep', icon: icon('moon') });
       },
     }] : []),
     {
@@ -883,9 +885,9 @@ async function copy(text, done = 'Link copied') {
   if (!text) return;
   try {
     await navigator.clipboard.writeText(text);
-    toast(done);
+    toast(text.length > 60 ? `${text.slice(0, 57)}…` : text, 2500, { title: done, icon: icon('link'), tone: 'done' });
   } catch {
-    toast('Couldn’t copy');
+    toast('Chrome didn’t allow the clipboard here.', 3500, { title: 'Couldn’t copy', icon: ALERT_ICON, tone: 'error' });
   }
 }
 
@@ -1195,6 +1197,7 @@ const focusing = () => state?.focus?.phase === 'work' && !state.focus.waiting;
 /** While focusing, icons of tabs you haven't used in this focus are black and white. */
 const focusDim = (tabId) => focusing() && tabId != null && (state.focus.before ?? []).includes(tabId);
 let announcedEnd = '';
+let endToastUp = false;
 /** Two soft notes (no sound file needed). Plays only if the sidebar has been clicked before, as Chrome requires. */
 function chime() {
   try {
@@ -1231,6 +1234,7 @@ function renderFocus() {
   document.body.classList.toggle('focus', focusing());
   if (!focusing()) focusReveal = false;
   if (!f) {
+    if (endToastUp) { endToastUp = false; const t = document.getElementById('toast'); if (t) t.hidden = true; }
     setHTML(el, `<button class="ft" data-cmd="focus-start" title="Start focus: 25 min, then a 5 min break&#10;Distracting sites are paused while you focus&#10;Right-click for other timers">
         <span class="ft-ico">${TOMATO}</span>
         <span class="ft-more"><span class="ft-label">Start focus</span><span class="ft-sub">25 + 5 min</span></span>
@@ -1243,10 +1247,12 @@ function renderFocus() {
       if (announcedEnd !== key) {
         announcedEnd = key;
         if (Date.now() - (f.phaseEndsAt ?? 0) < 90e3) chime(); // only right when it ends, not on opening later
-        toast(f.phase === 'work' ? `Round ${f.round} done. Click the tomato to start a 5 min break.` : 'Break is over. Click the tomato for the next round.', 10000);
+        endToastUp = true;
+        toast(f.phase === 'work' ? `Click the tomato to start a ${f.restMin ?? 5} min break.` : 'Click the tomato to start the next round.', 10000,
+          { title: f.phase === 'work' ? `Round ${f.round} done` : 'Break is over', icon: TOMATO, tone: 'focus' });
       }
       const next = f.phase === 'work' ? 'Start break' : 'Start focus';
-      const tip = f.phase === 'work' ? `Round ${f.round} done. Click to start a ${5} min break` : 'Break is over. Click to start the next round';
+      const tip = f.phase === 'work' ? `Round ${f.round} done. Click to start a ${f.restMin ?? 5} min break` : 'Break is over. Click to start the next round';
       setHTML(el, `<div class="ft waiting">
           <button class="ft-ico" data-cmd="focus-next" title="${tip}">${TOMATO}</button>
           <span class="ft-more">
@@ -1259,6 +1265,8 @@ function renderFocus() {
       return;
     }
     el.classList.remove('waiting');
+    // The next phase started (the tomato, or the notification in macOS): the "round done" message goes too.
+    if (endToastUp) { endToastUp = false; const t = document.getElementById('toast'); if (t) t.hidden = true; }
     const tip = f.phase === 'break' ? 'Break: distracting sites are open' : 'Focus: distracting sites are paused';
     setHTML(el, `<div class="ft">
         <button class="ft-ico" data-cmd="focus-menu" title="${tip}&#10;Click for options">${TOMATO}</button>
@@ -1275,7 +1283,7 @@ function renderFocus() {
   if (done && done.at > seenDoneAt && done.at !== lastDoneAt) {
     lastDoneAt = done.at;
     if (done.finished || done.rounds) {
-      toast(`Focus done · ${fmtMin(done.minutes)}${done.rounds ? ` · ${done.rounds} round${done.rounds === 1 ? '' : 's'}` : ''}`, 6000);
+      toast(`${fmtMin(done.minutes)} of focus${done.rounds ? ` · ${done.rounds} round${done.rounds === 1 ? '' : 's'}` : ''}. Paused sites are open again.`, 6000, { title: 'Focus done', icon: TOMATO, tone: 'focus' });
     }
   }
 }
@@ -1300,7 +1308,29 @@ function tickFocus() {
 setInterval(tickFocus, 1000);
 
 /** One click and it runs: Pomodoro by default; other timers are in the button's right-click menu. */
-const startFocus = (mode = 'pomodoro') => act('startFocus', { mode });
+const startFocus = async (mode = 'pomodoro') => { await act('startFocus', { mode }); alertHintOnce(); };
+
+/** The first focus: say once that the end-of-round notification needs Chrome allowed in the system's settings. */
+async function alertHintOnce() {
+  const { focusHelloShown } = await chrome.storage.local.get('focusHelloShown').catch(() => ({}));
+  if (focusHelloShown) return;
+  await chrome.storage.local.set({ focusHelloShown: true }).catch(() => {});
+  // The first focus sends a real notification right away, so you see now whether they reach you.
+  await act('focusHello');
+  toast('Atrium just sent one. If nothing appeared in the corner of the screen, allow notifications for Google Chrome.', 30000, {
+    title: 'Did a notification show up?', icon: BELL_ICON,
+    action: { label: 'Open notification settings', run: openNotificationSettings },
+  });
+}
+
+/** The system's notification settings: macOS System Settings → Notifications (Chrome's page where the system
+    supports it), Windows Settings → Notifications. Chrome asks once before opening another app. */
+function openNotificationSettings() {
+  const mac = /Mac/i.test(navigator.userAgentData?.platform || navigator.platform || '');
+  const a = document.createElement('a');
+  a.href = mac ? 'x-apple.systempreferences:com.apple.Notifications-Settings.extension?id=com.google.Chrome' : 'ms-settings:notifications';
+  a.click();
+}
 
 async function focusSitesDialog() {
   const sites = await send('getFocusSites', { windowId }).catch(() => []);
