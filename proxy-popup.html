@@ -1,0 +1,41 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>Incognito proxy</title>
+  <link rel="stylesheet" href="ui.css">
+  <style>
+    body { width: 290px; padding: 14px; margin: 0; display: grid; gap: 10px; background: var(--bg); color: var(--text); }
+    h1 { margin: 0; font-size: 14px; font-weight: 700; }
+    p { margin: 0; color: var(--muted); font-size: 12px; line-height: 1.4; }
+    .status { color: var(--text); font-weight: 600; word-break: break-all; }
+    .opts { display: grid; gap: 4px; }
+    .opt {
+      all: unset; display: flex; align-items: center; gap: 8px; padding: 8px 10px; border-radius: 10px; cursor: default; font-size: 13px; font-weight: 550;
+      background: var(--glass-strong); box-shadow: inset 0 0 0 0.5px var(--hairline);
+    }
+    .opt:hover { filter: brightness(1.05); }
+    .opt[aria-pressed=true] { box-shadow: inset 0 0 0 1.5px var(--text); }
+    .opt[disabled] { opacity: .45; pointer-events: none; }
+    .opt span { flex: 1; }
+    select {
+      border: 0; border-radius: 8px; padding: 4px 6px; font: 500 12px system-ui, sans-serif; color: var(--text);
+      background: var(--glass); box-shadow: inset 0 0 0 0.5px var(--hairline);
+    }
+    .link { all: unset; cursor: pointer; color: var(--muted); font-size: 12px; text-decoration: underline; }
+  </style>
+</head>
+<body>
+  <h1>Incognito proxy</h1>
+  <p class="status" id="status">…</p>
+  <div class="opts">
+    <button class="opt" data-mode="off"><span>Your IP</span></button>
+    <button class="opt" data-mode="free"><span>Free proxy</span><select id="country" title="Country of the free proxy"></select></button>
+    <button class="opt" data-act="next" id="next"><span>Try another free proxy</span></button>
+    <button class="opt" data-mode="own" id="own"><span>Your proxy</span></button>
+  </div>
+  <button class="link" id="setup">Proxy settings…</button>
+  <p>The page reloads through the new choice. Normal windows always stay direct.</p>
+  <script type="module" src="proxy-popup.js"></script>
+</body>
+</html>

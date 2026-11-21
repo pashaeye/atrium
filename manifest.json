@@ -1,0 +1,263 @@
+{
+  "manifest_version": 3,
+  "name": "Atrium — Vertical Tabs, Spaces & Sidebar",
+  "version": "1.5.4",
+  "description": "Spaces for Chrome’s vertical tabs: Favorites, Pinned tabs, a Command Bar, Peek, focus mode and screenshots in the side panel.",
+  "minimum_chrome_version": "127",
+  "background": {
+    "service_worker": "background.js",
+    "type": "module"
+  },
+  "side_panel": {
+    "default_path": "sidepanel.html"
+  },
+  "icons": {
+    "16": "icons/icon-16.png",
+    "32": "icons/icon-32.png",
+    "48": "icons/icon-48.png",
+    "128": "icons/icon-128.png"
+  },
+  "action": {
+    "default_title": "Atrium",
+    "default_icon": {
+      "16": "icons/icon-16.png",
+      "32": "icons/icon-32.png"
+    }
+  },
+  "chrome_url_overrides": {
+    "newtab": "newtab.html"
+  },
+  "permissions": [
+    "tabs",
+    "tabGroups",
+    "sidePanel",
+    "storage",
+    "history",
+    "bookmarks",
+    "search",
+    "favicon",
+    "topSites",
+    "alarms",
+    "sessions",
+    "declarativeNetRequestWithHostAccess",
+    "notifications",
+    "scripting",
+    "webNavigation"
+  ],
+  "host_permissions": [
+    "<all_urls>"
+  ],
+  "web_accessible_resources": [
+    {
+      "resources": [
+        "peek-frame.html",
+        "peek-frame.js",
+        "icons.js",
+        "ui.css",
+        "command.html",
+        "command.js",
+        "command.css",
+        "shared.js",
+        "popular.js"
+      ],
+      "matches": [
+        "<all_urls>"
+      ]
+    }
+  ],
+  "content_scripts": [
+    {
+      "matches": [
+        "<all_urls>"
+      ],
+      "js": [
+        "focus-guard.js"
+      ],
+      "run_at": "document_start"
+    },
+    {
+      "matches": [
+        "<all_urls>"
+      ],
+      "js": [
+        "capture-handle.js"
+      ],
+      "run_at": "document_start"
+    },
+    {
+      "matches": [
+        "<all_urls>"
+      ],
+      "js": [
+        "keys.js"
+      ],
+      "all_frames": true,
+      "run_at": "document_start"
+    },
+    {
+      "matches": [
+        "<all_urls>"
+      ],
+      "js": [
+        "plain-icons.js"
+      ],
+      "run_at": "document_start"
+    },
+    {
+      "matches": [
+        "<all_urls>"
+      ],
+      "js": [
+        "media-main.js"
+      ],
+      "all_frames": true,
+      "run_at": "document_start",
+      "world": "MAIN"
+    },
+    {
+      "matches": [
+        "<all_urls>"
+      ],
+      "js": [
+        "media.js"
+      ],
+      "all_frames": true,
+      "run_at": "document_start"
+    },
+    {
+      "matches": [
+        "<all_urls>"
+      ],
+      "js": [
+        "peek.js"
+      ],
+      "run_at": "document_end"
+    },
+    {
+      "matches": [
+        "<all_urls>"
+      ],
+      "js": [
+        "incognito.js"
+      ],
+      "run_at": "document_end"
+    },
+    {
+      "matches": [
+        "https://meet.google.com/*"
+      ],
+      "js": [
+        "meet-hook.js"
+      ],
+      "run_at": "document_start",
+      "world": "MAIN"
+    },
+    {
+      "matches": [
+        "https://meet.google.com/*"
+      ],
+      "js": [
+        "meet-bridge.js"
+      ],
+      "run_at": "document_start"
+    },
+    {
+      "matches": [
+        "<all_urls>"
+      ],
+      "js": [
+        "tab-drop.js"
+      ],
+      "run_at": "document_start"
+    }
+  ],
+  "commands": {
+    "_execute_action": {
+      "suggested_key": {
+        "default": "Alt+Shift+Space",
+        "mac": "Alt+Shift+Space"
+      },
+      "description": "Open or close the sidebar (⌥⇧Space, works on any keyboard layout)"
+    },
+    "command-bar": {
+      "suggested_key": {
+        "default": "Alt+Shift+K",
+        "mac": "Alt+Shift+K"
+      },
+      "description": "Command Bar (⌥⇧K)"
+    },
+    "next-space": {
+      "suggested_key": {
+        "default": "Alt+Shift+Period",
+        "mac": "Alt+Shift+Period"
+      },
+      "description": "Next Space (⌥⇧.)"
+    },
+    "prev-space": {
+      "suggested_key": {
+        "default": "Alt+Shift+Comma",
+        "mac": "Alt+Shift+Comma"
+      },
+      "description": "Previous Space (⌥⇧,)"
+    },
+    "space-1": {
+      "description": "Switch to Space 1 (⌥⇧1)"
+    },
+    "space-2": {
+      "description": "Switch to Space 2 (⌥⇧2)"
+    },
+    "space-3": {
+      "description": "Switch to Space 3 (⌥⇧3)"
+    },
+    "space-4": {
+      "description": "Switch to Space 4 (⌥⇧4)"
+    },
+    "space-5": {
+      "description": "Switch to Space 5 (⌥⇧5)"
+    },
+    "space-6": {
+      "description": "Switch to Space 6 (⌥⇧6)"
+    },
+    "space-7": {
+      "description": "Switch to Space 7 (⌥⇧7)"
+    },
+    "space-8": {
+      "description": "Switch to Space 8 (⌥⇧8)"
+    },
+    "space-9": {
+      "description": "Switch to Space 9 (⌥⇧9)"
+    },
+    "toggle-focus": {
+      "description": "Start or end focus (⌥⇧F)"
+    },
+    "pin-tab": {
+      "description": "Pin or unpin the tab (⌥⇧P)"
+    },
+    "add-favorite": {
+      "description": "Add the tab to Favorites (⌥⇧B, Windows: Alt+Shift+V)"
+    },
+    "copy-link": {
+      "description": "Copy the tab's link (⌥⇧C)"
+    },
+    "copy-markdown": {
+      "description": "Copy the tab's link as Markdown (⌥⇧M)"
+    },
+    "screenshot": {
+      "description": "Screenshot of the page (⌥⇧X)"
+    },
+    "incognito": {
+      "description": "Open the page in Incognito (⌥⇧I, Windows: Alt+Shift+G)"
+    },
+    "duplicate-tab": {
+      "description": "Duplicate the tab (⌥⇧D)"
+    },
+    "reset-pinned": {
+      "description": "Pinned tab back to its pinned page (⌥⇧R)"
+    },
+    "player-toggle": {
+      "description": "Play / pause in the player"
+    }
+  },
+  "short_name": "Atrium",
+  "homepage_url": "https://pashaeye.github.io/atrium/"
+}

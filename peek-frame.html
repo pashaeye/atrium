@@ -1,0 +1,47 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>Peek</title>
+  <link rel="stylesheet" href="ui.css">
+  <style>
+    html, body { height: 100%; margin: 0; overflow: hidden; background: var(--bg); }
+    body { display: flex; flex-direction: column; }
+    .bar {
+      display: flex; align-items: center; gap: 8px; height: 40px; padding: 0 8px 0 14px; flex: none; position: relative;
+      border-bottom: 0.5px solid var(--hairline); background: color-mix(in srgb, var(--bg) 92%, transparent);
+    }
+    .bar > img { width: 16px; height: 16px; border-radius: 3px; flex: none; }
+    .host { flex: 1; min-width: 0; font-size: 12px; color: var(--muted); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .host b { color: var(--text); font-weight: 600; }
+    .split { display: flex; border-radius: 999px; background: var(--glass-strong); box-shadow: inset 0 0 0 0.5px var(--hairline); }
+    .split button { display: flex; align-items: center; gap: 6px; padding: 5px 10px; font-size: 12px; font-weight: 600; border-radius: 999px; }
+    .split button:hover { background: color-mix(in srgb, var(--text) 8%, transparent); }
+    .split .more { padding: 4px 9px 4px 6px; color: var(--muted); }
+    .split .more svg { width: 14px; height: 14px; display: block; }
+    .split .more:hover { color: var(--text); }
+    .s-ico { width: 14px; height: 14px; display: grid; place-items: center; }
+    .s-ico svg { width: 14px; height: 14px; display: block; }
+    .s-ico .dot { width: 8px; height: 8px; border-radius: 50%; }
+    .x { width: 28px; height: 28px; font-size: 17px; }
+    .menu.spaces { position: absolute; top: 38px; right: 40px; }
+    .menu.spaces button { display: flex; align-items: center; gap: 8px; }
+    .menu.spaces .cur { color: var(--muted); margin-left: auto; font-size: 11px; }
+    iframe { flex: 1; width: 100%; border: 0; background: #fff; }
+  </style>
+</head>
+<body>
+  <div class="bar">
+    <img id="fav" alt="">
+    <span class="host" id="host"></span>
+    <div class="split">
+      <button id="keep" title="Keep as a tab in this Space">Open in <span class="s-ico" id="cur-ico"></span><span id="cur-name">Space</span></button>
+      <button class="more" id="more" title="Choose a Space"></button>
+    </div>
+    <button class="btn-icon x" id="close" title="Close (Esc)">×</button>
+    <div class="menu spaces" id="spaces" hidden></div>
+  </div>
+  <iframe id="page" allow="fullscreen; clipboard-write; autoplay; encrypted-media; picture-in-picture"></iframe>
+  <script type="module" src="peek-frame.js"></script>
+</body>
+</html>

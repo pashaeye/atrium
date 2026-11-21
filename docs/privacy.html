@@ -1,0 +1,67 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Atrium — Privacy Policy</title>
+<style>
+  :root { --bg: #fbfaf7; --text: #1d1d1f; --muted: #6e6e73; --line: #e5e3dd; --accent: #4f5bd5; }
+  @media (prefers-color-scheme: dark) { :root { --bg: #1c1c1e; --text: #f2f2f7; --muted: #a1a1a6; --line: #3a3a3c; --accent: #8e96ff; } }
+  body { margin: 0; background: var(--bg); color: var(--text); font: 16px/1.6 -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; }
+  main { max-width: 720px; margin: 0 auto; padding: 48px 20px 80px; }
+  h1 { font-size: 32px; margin: 0 0 4px; letter-spacing: -0.02em; }
+  h2 { font-size: 20px; margin: 36px 0 8px; }
+  .muted { color: var(--muted); }
+  a { color: var(--accent); }
+  ul { padding-left: 22px; }
+  li { margin: 6px 0; }
+  hr { border: 0; border-top: 1px solid var(--line); margin: 40px 0 16px; }
+</style>
+</head>
+<body>
+<main>
+  <h1>Atrium Privacy Policy</h1>
+  <p class="muted">Last updated: November 21, 2026 · applies to the Atrium Chrome extension, version 1.0 and later</p>
+
+  <p><b>In short: Atrium keeps everything in your browser. It has no server, no account, no analytics and no ads. Nothing you do is sent to the developer or to anyone else.</b></p>
+
+  <h2>What Atrium stores, and where</h2>
+  <p>Only in Chrome’s own extension storage on your computer (<code>chrome.storage</code>):</p>
+  <ul>
+    <li>Your Spaces (names, colours, icons, order), Favorites, Pinned tabs and folders.</li>
+    <li>Settings: sleeping tabs, the morning reset, plain tab icons, the list of sites paused during focus, and the focus timer’s state (kept across a browser restart).</li>
+    <li>Site icons remembered from pages you visit, so the sidebar can show them.</li>
+    <li>While Chrome is open: which tabs belong where, their order and which tab opened which (cleared when Chrome closes).</li>
+  </ul>
+  <p>Removing the extension deletes all of this.</p>
+
+  <h2>What Atrium reads, and why</h2>
+  <ul>
+    <li><b>Tabs and tab groups</b> — to show and organise your tabs in the sidebar.</li>
+    <li><b>History, bookmarks and most visited sites</b> — only to show them in the Command Bar and on the New Tab page when you search. They are read on your computer and never sent anywhere. Removing a page from history in Atrium removes it from Chrome’s history.</li>
+    <li><b>Recently closed tabs</b> — to undo closing tabs.</li>
+    <li><b>Pages you open</b> — Atrium’s scripts run on web pages to: notice media playing (for the mini player), notice that a call is on and that you are sharing your screen (a green or red dot in the sidebar), open links in Peek, take screenshots you ask for, show a frame on Incognito pages, show plain icons in Chrome’s tab strip and make keyboard shortcuts work on any keyboard layout. They also cover the sites you chose to pause while you focus, and let a tab dragged out of the sidebar be dropped on a page. These scripts do not read or store page content, form data, passwords or messages.</li>
+    <li><b>Camera and microphone</b> — Atrium never receives your audio or video. It only sees that a page started using them, so it can mark the tab as being in a call, and it can toggle the page’s own microphone and camera buttons when you click them in the sidebar.</li>
+    <li><b>Screenshots</b> — taken only when you ask; copied to your clipboard or saved to your Downloads folder. They are not uploaded.</li>
+  </ul>
+
+  <h2>What Atrium sends over the network</h2>
+  <p>Nothing about you. To show a site’s icon in the sidebar or the Command Bar, Atrium may load that icon from the site itself, the same file your browser loads when you visit it. When you search with an @ command in the Command Bar (for example <code>@yt</code>), Atrium opens that site’s own search page with your query, exactly as if you had typed it there.</p>
+
+  <h2>Sharing and selling</h2>
+  <p>Atrium does not sell, share or transfer your data to anyone, does not use it for advertising or credit decisions, and does not use it for anything other than the features described above.</p>
+
+  <h2>Children</h2>
+  <p>Atrium is a general-purpose tool and does not knowingly collect any data from anyone, including children.</p>
+
+  <h2>Changes</h2>
+  <p>If a future version handles data differently, this page will be updated before that version is published, and the date above will change.</p>
+
+  <h2>Contact</h2>
+  <p>Questions or problems: <a href="https://github.com/pashaeye/atrium/issues">open an issue on GitHub</a>.</p>
+
+  <hr>
+  <p class="muted">Atrium is an independent project and is not affiliated with Google or any browser maker.</p>
+</main>
+</body>
+</html>

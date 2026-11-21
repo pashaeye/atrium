@@ -1,0 +1,18 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128" width="128" height="128">
+  <!-- "Twin": two overlapping spaces (violet→blue and pink→orange circles) on a near-black rounded
+       square; their overlap is a bright white lens. Transparent outside the square. -->
+  <defs>
+    <linearGradient id="a" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#7C5CFF"/>
+      <stop offset="1" stop-color="#4A8BFF"/>
+    </linearGradient>
+    <linearGradient id="b" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#FF5FA8"/>
+      <stop offset="1" stop-color="#FF9A5B"/>
+    </linearGradient>
+  </defs>
+  <rect x="4" y="4" width="120" height="120" rx="30" fill="#0D0D16"/>
+  <circle cx="50" cy="64" r="27" fill="url(#a)"/>
+  <circle cx="78" cy="64" r="27" fill="url(#b)" fill-opacity="0.85"/>
+  <path d="M64 40.9a27 27 0 0 1 0 46.2a27 27 0 0 1 0-46.2z" fill="#FFFFFF" fill-opacity="0.9"/>
+</svg>

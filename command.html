@@ -1,0 +1,21 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>Command Bar</title>
+  <link rel="stylesheet" href="ui.css">
+  <link rel="stylesheet" href="command.css">
+</head>
+<body class="popup">
+  <div class="cb">
+    <div class="cb-input">
+      <span class="cb-ico" aria-hidden="true"></span>
+      <div class="cb-field"><div id="ghost" class="ghost" aria-hidden="true"></div><input id="q" placeholder="Search tabs, Spaces, history or enter address" autocomplete="off" spellcheck="false"></div>
+    </div>
+    <div id="list" class="cb-list" role="listbox"></div>
+    <div class="cb-foot"><span>⇥ complete</span><span>↵ open</span><span>@ search a site</span><span>⌘↵ new tab</span><span>esc close</span></div>
+  </div>
+  <script src="keys.js"></script>
+  <script type="module" src="command.js"></script>
+</body>
+</html>

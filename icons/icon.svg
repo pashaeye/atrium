@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128" width="128" height="128">
+  <!-- "Orb": a violet sphere with a soft white highlight, filling the whole square, on a transparent background. -->
+  <defs>
+    <radialGradient id="orb" cx="0.34" cy="0.3" r="0.8">
+      <stop offset="0" stop-color="#FFFFFF"/>
+      <stop offset="0.22" stop-color="#D6CCFF"/>
+      <stop offset="0.55" stop-color="#8B6BFF"/>
+      <stop offset="0.85" stop-color="#4A2FC9"/>
+      <stop offset="1" stop-color="#2A1A80"/>
+    </radialGradient>
+  </defs>
+  <circle cx="64" cy="64" r="63" fill="url(#orb)"/>
+</svg>

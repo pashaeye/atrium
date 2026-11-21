@@ -1,0 +1,112 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Atrium — Setup</title>
+  <link rel="stylesheet" href="ui.css">
+  <link rel="icon" href="icons/icon-32.png">
+  <style>
+    body {
+      min-height: 100vh; padding: 56px 16px;
+      background-attachment: fixed;
+    }
+    main { max-width: 640px; margin: 0 auto; display: grid; gap: 12px; }
+    .hero { display: flex; gap: 16px; align-items: center; margin-bottom: 10px; }
+    .hero img { width: 64px; height: 64px; filter: drop-shadow(0 8px 20px rgba(91, 108, 255, 0.35)); }
+    h1 { font-size: 28px; font-weight: 750; letter-spacing: -0.025em; margin: 0 0 4px; }
+    p { margin: 0; color: var(--muted); font-weight: 450; }
+    .step {
+      padding: 18px 20px; display: grid; gap: 10px; border-radius: 20px;
+      background: var(--glass); -webkit-backdrop-filter: var(--blur); backdrop-filter: var(--blur);
+      box-shadow: inset 0 0.5px 0 var(--glass-edge), inset 0 0 0 0.5px var(--hairline), var(--glass-shadow);
+    }
+    .step h2 { margin: 0; font-size: 15px; font-weight: 700; display: flex; align-items: center; gap: 10px; }
+    .step h2 span {
+      width: 24px; height: 24px; border-radius: 999px; display: grid; place-items: center; flex: none;
+      background: var(--ui); color: var(--ui-text); font-size: 12px;
+    }
+    code { background: var(--glass-strong); padding: 1px 6px; border-radius: 6px; font: 500 12px ui-monospace, SFMono-Regular, Menlo, monospace; }
+    /* Shortcuts as key caps, sitting on the text line. */
+    .keys { display: inline-flex; gap: 3px; vertical-align: 1px; }
+    kbd {
+      display: inline-grid; place-items: center; min-width: 20px; height: 20px; padding: 0 5px; border-radius: 5px;
+      font: 600 11px/1 -apple-system, BlinkMacSystemFont, "SF Pro Text", system-ui, sans-serif; color: var(--text);
+      background: var(--glass-strong);
+      box-shadow: inset 0 0 0 0.5px var(--hairline), inset 0 -1.5px 0 color-mix(in srgb, var(--text) 14%, transparent);
+    }
+    .line { display: flex; gap: 8px; align-items: center; flex-wrap: wrap; }
+    ul { margin: 0; padding-left: 18px; color: var(--muted); }
+    li { margin: 3px 0; }
+    b { color: var(--text); }
+  </style>
+</head>
+<body class="paper">
+  <main>
+    <div class="hero">
+      <img src="icons/icon-128.png" alt="">
+      <div>
+        <h1>Atrium is installed</h1>
+        <p>The goal: a slim strip of Chrome tabs on the left, the Atrium sidebar next to it, and only the address bar on top. Extensions can’t change Chrome’s settings, so these steps are a one-time manual setup.</p>
+      </div>
+    </div>
+
+    <section class="step">
+      <h2><span>1</span>Move Chrome’s tabs to the side</h2>
+      <p>Vertical tabs are built into Chrome now, no flags needed. Right-click an empty spot on the tab strip and choose <b>Show tabs vertically</b>. Or open Settings → Appearance and set the tab position to the side.</p>
+      <div class="line"><button class="btn" data-open="chrome://settings/appearance">Open Appearance settings</button></div>
+      <p>Only on an old Chrome without that option: turn on <code>chrome://flags/#vertical-tabs</code> and relaunch Chrome.</p>
+    </section>
+
+    <section class="step">
+      <h2><span>2</span>Collapse Chrome’s tabs to a slim strip</h2>
+      <p>Click the collapse button at the top of the side tab strip. A one-icon-wide strip remains. The Atrium sidebar manages your tabs; the strip just stays out of the way.</p>
+    </section>
+
+    <section class="step">
+      <h2><span>3</span>Put the Atrium sidebar on the left</h2>
+      <p>In Settings → Appearance, find the side panel position and choose “Left”. The sidebar will sit next to the tab strip.</p>
+      <div class="line"><button class="btn" data-open="chrome://settings/appearance">Open Appearance settings</button></div>
+    </section>
+
+    <section class="step">
+      <h2><span>4</span>Open the Atrium sidebar</h2>
+      <p>Pin the extension icon: puzzle icon in the toolbar → pin next to “Atrium”. Clicking the icon or the shortcut <span id="k-panel">—</span> opens the sidebar. Chrome keeps it open in that window.</p>
+      <div class="line"><button class="btn primary" id="open-panel">Open sidebar</button></div>
+    </section>
+
+    <section class="step">
+      <h2><span>5</span>Shortcuts, if you want them</h2>
+      <p>All shortcuts are <span class="keys"><kbd>⌥</kbd><kbd>⇧</kbd></span> plus a letter for the action. Set up out of the box: sidebar <b>Space</b> (the space bar, so it works on any keyboard layout), Command Bar <b>K</b>, next / previous Space <b>.</b> and <b>,</b>.</p>
+      <p>The rest you assign once on Chrome’s shortcuts page (each one shows its suggested key): Space 1–9 <b>1…9</b>, focus <b>F</b>, pin <b>P</b>, to Favorites <b>B</b>, copy link <b>C</b>, as Markdown <b>M</b>, screenshot <b>X</b>, Incognito <b>I</b>, duplicate <b>D</b>, Pinned back to its page <b>R</b>. On Windows it’s Alt+Shift, with <b>V</b> for Favorites and <b>G</b> for Incognito.</p>
+      <div class="line"><button class="btn" data-open="chrome://extensions/shortcuts">Set shortcuts</button></div>
+    </section>
+
+    <section class="step">
+      <h2><span>6</span>How it works</h2>
+      <ul>
+        <li><b>Space</b> is a tab group. Swipe with two fingers on the sidebar, click the icons at the bottom or use the shortcuts to switch. Clicking a collapsed group header in Chrome’s tab strip switches Space too.</li>
+        <li><b>Favorites</b> are the tiles at the top, shared by all Spaces (they are Chrome’s pinned tabs).</li>
+        <li><b>Pinned</b> are a Space’s permanent tabs. Closing one doesn’t remove it. You can organize them into folders.</li>
+        <li><b>Today</b> holds a Space’s regular tabs. Sort them by domain, title or recent use; the broom button closes tabs you haven’t used for over a week, after you review the list.</li>
+        <li>Drag tabs between sections and onto Space icons, and up or down to put them in your own order. Drag a tab out of the sidebar to open it in its own window. Right-click for more actions. Cmd+click duplicates a tab.</li>
+        <li><b>Split view</b> (Chrome 155 or newer): drop a tab onto the middle of another tab to open the two side by side. A pair shows in one frame; drag one tab away, or right-click → Separate split view, to undo it.</li>
+        <li><b>New tab</b> (⌘T), the <b>Search</b> button above Today or ⌥⇧K open the Command Bar: search tabs, Spaces, bookmarks and history. In a new window, the first page you open from it also opens the sidebar there.</li>
+        <li><b>@ in the Command Bar:</b> type <code>@g</code>, <code>@ai</code> (Google AI Mode), <code>@p</code> (Perplexity), <code>@yt</code>, <code>@maps</code>, <code>@gh</code>, <code>@chat</code>, <code>@claude</code> or <code>@tr</code> and press Tab or space to search that site. Backspace on an empty field removes it.</li>
+        <li><b>Screenshots:</b> hover a tab in the sidebar and click the camera. The page dims (you can still scroll it) and a bar appears: Screen, Area (drag a rectangle, drag it again to move it; Copy, Save and × to select again sit next to it) or Full page, then Copy or Save (a .png in Downloads). Enter copies, Esc closes. Chrome’s own pages and the Web Store can’t be captured.</li>
+        <li><b>Incognito:</b> hover a tab and click the incognito icon (or right-click → Open in Incognito) to open the page in an Incognito window, signed out; the original tab stays. Atrium leaves Incognito windows alone. To get a violet frame and an “Incognito” label on private pages, turn on chrome://extensions → Atrium → Details → Allow in Incognito.</li>
+        <li><b>Several windows:</b> each window has its own tabs in a Space; the Space’s tabs from your other windows show at the end of its list, grey, with a small window icon in the corner. Click one to move it into this window; the other window then shows it grey.</li>
+        <li><b>Tab tree:</b> in the default order (newest first), a tab opened from another tab (a link opened in a new tab) sits under it, indented. Hover the parent and click the caret on its icon to fold the branch; the number shows how many tabs are folded.</li>
+        <li><b>Calm tab strip:</b> every page shows the same grey circle in Chrome’s own tab strip (on by default; Settings, the gear → Plain icons in Chrome’s tab strip), so Chrome’s own strip doesn’t pull your eye from the sidebar. The sidebar and the Command Bar keep real icons. Chrome also remembers the circle for those sites in bookmarks and history until you visit them with it off.</li>
+        <li><b>Every morning</b> (from 5:00), open Pinned tabs and Favorites that wandered off to other pages go back to the page you pinned. The tab you’re on and tabs playing sound are left alone. Switch it off or run it now: Settings (the gear, bottom right) → Reset Pinned &amp; Favorites.</li>
+        <li><b>Focus:</b> click the tomato in the bottom-left corner of the sidebar. Pomodoro: 25 min of focus, then a 5 min break, round after round; right-click the tomato for 50 min, 90 min or no limit. While focusing, about 100 distracting sites are covered by a calm card (you can still open one for 1 minute); tabs that were open before fold into “N tabs hidden”, and their icons turn black and white until you use them. When a round or a break ends, you hear a short chime and the tomato pulses: click it (or the notification) to go on. The ring around the tomato fills up as time runs out; hover it for the countdown. Focus carries on after a browser restart if its time isn’t up. Your Favorites, Pinned tabs and music sites are never paused. Edit the list in the Settings (the gear, bottom right) → Paused sites during focus….</li>
+        <li><b>Peek:</b> Shift+click a link to preview it in a card over the current page (works in full screen). Links that a site opens in a new tab open in Peek on any site, and in Favorites and Pinned tabs links to other sites do too (Cmd+click still opens a background tab). Click outside the card, press Esc or × to close it; “Open in …” keeps it as a tab in the current Space, ▾ lets you pick another Space. Some sites may look signed out inside the card. On the New Tab page, ⇧-click a result or press ⇧↵ to take a quick look the same way.</li>
+        <li><b>Sleeping tabs:</b> tabs of Spaces you aren’t using are unloaded from memory after 30 minutes (change it in Settings, the gear at the bottom right). They stay in the list, look a bit fainter and reload when opened.</li>
+        <li><b>Calls:</b> a green dot marks a tab that’s in a call (Meet, Zoom, Teams and others), a red dot the tab you’re presenting; the player shows microphone and camera buttons. Reload open tabs once after installing.</li>
+      </ul>
+      <p>All Spaces share the cookies and sign-ins of one Chrome profile. Use separate Chrome profiles for separate accounts.</p>
+    </section>
+  </main>
+  <script type="module" src="onboarding.js"></script>
+</body>
+</html>

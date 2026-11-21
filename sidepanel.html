@@ -1,0 +1,41 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Atrium</title>
+  <link rel="stylesheet" href="ui.css">
+  <link rel="stylesheet" href="sidepanel.css">
+</head>
+<body class="paper">
+  <div id="app">
+    <header class="top">
+      <div id="side-hint" class="hint" hidden>
+        <span>The sidebar is on the right. It works best on the left.</span>
+        <button class="btn" data-cmd="open-appearance">Settings</button>
+        <button class="btn-icon" data-cmd="dismiss-hint" title="Hide">×</button>
+      </div>
+      <div id="favs" class="favs" data-zone="favs"></div>
+    </header>
+
+    <!-- One page per Space, side by side; swiping slides the track. -->
+    <div id="viewport" class="viewport">
+      <div id="track" class="track"></div>
+    </div>
+
+    <div id="player" class="player" hidden></div>
+
+    <nav class="spacebar">
+      <div id="spaces" class="spaces" data-zone="spaces"></div>
+      <div id="tomato" class="tomato"></div>
+      <button id="settings" class="settings-btn" data-cmd="settings" title="Settings: sleeping tabs, focus, shortcuts" aria-label="Settings"></button>
+    </nav>
+  </div>
+
+  <div id="unsupported" class="unsupported" hidden>This sidebar works only in regular Chrome windows.</div>
+  <div id="undo-chip" class="undo-chip" hidden></div>
+  <div id="toast" class="toast" hidden></div>
+  <script src="keys.js"></script>
+  <script type="module" src="sidepanel.js"></script>
+</body>
+</html>
